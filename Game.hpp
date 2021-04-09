@@ -7,6 +7,9 @@
 
 #pragma once
 #include "Map.hpp"
+#include "Gem.hpp"
+#include "MagicApple.hpp"
+#include <vector>
 
 class Game {
 private:
@@ -17,6 +20,35 @@ private:
     // Map of the current level
     Map map;
     
+    // Player
+    Player player;
+    
+    // Array of monsters
+    vector<Monster> monsters;
+    
+    // Gem
+    Gem gem;
+    
+    // Array of Magic Apples
+    vector<MagicApple> apples;
+    
+protected:
+    
+    // Spawn objects
+    void spawnObjects();
+    
+    // Render the map with all the objects
+    char ** getRenderedMap();
+    
+    // Print the map with all the objects
+    void printMap();
+    
+    // Process one turn
+    void turn(char);
+    
+    // Go to the next level
+    void levelUp();
+    
 public:
     
     // Constructor
@@ -24,8 +56,5 @@ public:
     
     // Starts the game
     void start();
-    
-    // Go to the next level
-    void levelUp();
     
 };

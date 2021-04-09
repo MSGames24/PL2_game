@@ -6,3 +6,18 @@
 //
 
 #include "Monster.hpp"
+
+Monster::Monster(int x, int y) : GameObject(x, y, Settings::SYMBOL_MONSTER) {
+    this->strength = 100;
+    this->energy = 100;
+}
+
+// Sets the X coordinate
+void Monster::setX(int x) {
+    this->position.setX(x);
+}
+
+// Sets the Y coordinate
+void Monster::setY(int y) {
+    this->position.setY(y);
+}

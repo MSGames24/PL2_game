@@ -6,13 +6,9 @@
 //
 
 #include "Player.hpp"
-#include "GameObject.hpp"
+#include "Settings.hpp"
 
-Player::Player(int x, int y) : GameObject(x, y, Settings::SYMBOL_PLAYER) {
-    
-}
-
-Player::Player() {
+Player::Player(int x, int y) : GameObject(x, y, Settings::SYMBOL_PLAYER){
     
 }
 

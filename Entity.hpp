@@ -9,7 +9,7 @@
 #include "Position.hpp"
 
 class Entity {
-private:
+protected:
     
     // The strength of the object
     int strength;
@@ -18,9 +18,6 @@ private:
     int energy;
     
 public:
-    
-    // Constructor
-    Entity(int, int, char);
     
     // Default constructor
     Entity();

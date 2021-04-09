@@ -6,8 +6,18 @@
 //
 
 #pragma once
+#include "Entity.hpp"
 #include "GameObject.hpp"
 
-class Monster : public GameObject {
+class Monster : public Entity, public GameObject {
+public:
     
+    // Constructor
+    Monster(int, int);
+    
+    // Sets the X coordinate
+    void setX(int) override;
+    
+    // Sets the Y coordinate
+    void setY(int) override;
 };

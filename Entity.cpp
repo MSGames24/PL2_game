@@ -7,11 +7,6 @@
 
 #include "Entity.hpp"
 
-// Constructor
-//Entity::Entity(int x, int y, char symbol) : GameObject(x, y, symbol) {
-    
-//}
-
 // Default constructor
 Entity::Entity() {
     

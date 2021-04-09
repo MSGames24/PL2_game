@@ -2,47 +2,36 @@
 //  GameObject.hpp
 //  Final project (Treasure Hunting Game)
 //  TAMK, Programming Languages 2, 20i260E
-//  Created by Sviatoslav Vasev on 29.3.2021.
+//  Created by Sviatoslav Vasev on 8.4.2021.
 //
 
 #pragma once
 #include "Position.hpp"
 #include "Settings.hpp"
 
-enum ObjectType {GameObjectType, WallType, SpaceType, PlayerType, MonsterType};
-
 class GameObject {
-private:
-    
-    // Symbolic representation of an object
-    char symbol;
-    
 protected:
     
-    // Position of an object
+    // Postion of the object
     Position position;
+    
+    // Symbol of the object
+    char symbol;
     
 public:
     
     // Constructor
     GameObject(int, int, char);
     
-    // Constructor
-    GameObject();
-
-    // Returns the symbol of the object
-    char getSymbol() const;
-    
     // Returns the position
     Position getPosition() const;
     
-    // Returns the X coordinate
-    int getX() const;
+    // Returns the symbol of the object
+    char getSymbol() const;
     
-    // Returns the Y coordinate
-    int getY() const;
+    // Sets the X coordinate
+    void virtual setX(int);
     
-    // Returns the type of the object
-    virtual ObjectType getType() const;
-    
+    // Sets the Y coordinate
+    void virtual setY(int);
 };

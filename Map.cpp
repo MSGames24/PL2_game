@@ -8,71 +8,44 @@
 #include "Map.hpp"
 using namespace std;
 
-// Changes one character to the passed value
-void Map::set(int width, int height, GameObject * obj) {
-    if (this->table[height * this->width + width] == nullptr or this->table[height * this->width + width] == NULL) {
-        this->table[height * this->width + width] = obj;
-    } else {
-        delete this->table[height * this->width + width];
-        this->table[height * this->width + width] = obj;
-    }
-}
-
 // Constructor
-Map::Map (int level, Player * player) {
+Map::Map (int level) {
     
     // Create the size of the map according to the level
     this->width = level + 7;
     this->height = level + 7;
     
-    // Dynamically allocated array
-    this->table = new GameObject*[width * height];
+    // Dynamically allocated 2D array
+    this->table = new char*[height];
+    for (int i = 0; i < this->height; i++) {
+        this->table[i] = new char[this->width];
+    }
     
     // Assigning every inner char SYMBOL_SPACE and outer har SYMBOL_WALL
-    for (int h = 0; h < height; h++) {
-        for (int w = 0; w < width; w++) {
-            if (h == 0 or h == height - 1 or w == 0 or w == width - 1) {
-                Wall * obj = new Wall(w, h);
-                this->set(w, h, obj);
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            if (y == 0 or y == height - 1 or x == 0 or x == width - 1) {
+                this->table[x][y] = Settings::SYMBOL_WALL;
             } else {
-                Space * obj = new Space(w, h);
-                this->set(w, h, obj);
+                this->table[x][y] = Settings::SYMBOL_SPACE;
             }
         }
     }
     
     // Adding internal walls
-    srand(int(time(NULL)));
-    for (int i = 0; i < (width - 2) * (height - 2) / 5; i++) {
-        int w = rand() % (width - 2) + 1;
-        int h = rand() % (height - 2) + 1;
+    srand(int(time(NULL))); 
+    for (int i = 0; i < Settings::FORMULA_WALLS(this->width, this->height); i++) {
+        int x = rand() % (width - 2) + 1;
+        int y = rand() % (height - 2) + 1;
         
-        Wall * obj = new Wall(w, h);
-        this->set(w, h, obj);
-    }
-    
-    // Adding the player
-    for (int w = this->width / 2; w < this->width; w++) {
-        for (int h = this->height / 2; h < this->height; h++) {
-            if(this->getElementAt(w, h).getType() == SpaceType) {
-                player->setX(w);
-                player->setY(h);
-                this->set(w, h, player);
-                goto playerAdded;
-            }
-        }
-    }
-    playerAdded:
-    
-    if (false) {
-        
+        this->table[x][y] = Settings::SYMBOL_WALL;
     }
 }
 
 // Destructor
 Map::~Map () {
     // Delete allocated memory
-    for (int i = 0; i < this->width * this->height; i++) {
+    for (int i = 0; i < this->height; i++) {
         delete this->table[i];
     }
     delete [] this->table;
@@ -82,9 +55,12 @@ Map::~Map () {
 Map::Map (const Map &right) {
     this->width = right.width;
     this->height = right.height;
-    this->table = new GameObject*[width * height];
-    for (int i = 0; i < this->width * this->height; i++) {
-        this->table[i] = right.table[i];
+    this->table = new char*[height];
+    for (int i = 0; i < this->height; i++) {
+        this->table[i] = new char[this->width];
+        for (int k = 0; k < this->width; k++) {
+            this->table[i][k] = right.table[i][k];
+        }
     }
 }
 
@@ -96,7 +72,7 @@ Map& Map::operator= (const Map &right) {
     this->~Map();
     this->width = right.width;
     this->height = right.height;
-    this->table = new GameObject*[width * height];
+    this->table = new char*[width * height];
     for (int i = 0; i < width * height; i++) {
         this->table[i] = right.table[i];
     }
@@ -104,43 +80,16 @@ Map& Map::operator= (const Map &right) {
 }
 
 // Prints the table
-void Map::print() const {
-    for (int h = 0; h < this->height; h++) {
-        for (int w = 0; w < this->width; w++) {
-            cout << this->getElementAt(w, h).getSymbol();
-        }
-        cout << endl;
-    }
+char ** Map::getTable() const {
+    return this->table;
 }
 
-// Moves the entity
-void Map::moveObject(GameObject &obj, char direction) {
-    if (obj.getType() != PlayerType or obj.getType() != MonsterType) return;
-    switch (direction) {
-        case 'w':
-            if (this->getElementAt(obj.getX(), obj.getY() - 1).getType() != SpaceType) return;
-            swap(this->table[obj.getY() * this->width + obj.getX()], this->table[(obj.getY() - 1) * this->width + obj.getX()]);
-            cout << "done" << endl;
-            break;
-    }
+// Returns the width
+int Map::getWidth() {
+    return this->width;
 }
 
-// Returns the element at the given coordinates
-GameObject &Map::getElementAt(int x, int y) const {
-    return *this->table[y * this->width + x];
-}
-
-// Returns the element at the given position
-GameObject &Map::getElementAt(Position pos) const {
-    return this->getElementAt(pos.getX(), pos.getY());
-}
-
-// Returns the player
-GameObject &Map::getPlayer() const {
-    for (int i = 0; i < this->width * this->height; i++) {
-        if (this->table[i]->getType() == PlayerType) {
-            return *this->table[i];
-        }
-    }
-    return *this->table[0];
+// Returns the height
+int Map::getHeight() {
+    return this->height;
 }

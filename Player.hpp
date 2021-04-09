@@ -6,8 +6,8 @@
 //
 
 #pragma once
-#include "GameObject.hpp"
 #include "Entity.hpp"
+#include "GameObject.hpp"
 
 class Player : public Entity, public GameObject {
 public:
@@ -15,13 +15,10 @@ public:
     // Constructor
     Player(int, int);
     
-    // Default constructor
-    Player();
-    
     // Sets the X coordinate
-    void setX(int);
+    void setX(int) override;
     
     // Sets the Y coordinate
-    void setY(int);
+    void setY(int) override;
     
 };
