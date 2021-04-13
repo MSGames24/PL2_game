@@ -7,8 +7,9 @@
 
 #include "Monster.hpp"
 
-Monster::Monster(int x, int y) : GameObject(x, y, Settings::SYMBOL_MONSTER) {
-    this->strength = 100;
+Monster::Monster(int x, int y, int level) : GameObject(x, y, Settings::SYMBOL_MONSTER) {
+    
+    this->strength = Settings::STRENGTH_MONSTER(level);
     this->energy = 100;
 }
 
@@ -20,4 +21,13 @@ void Monster::setX(int x) {
 // Sets the Y coordinate
 void Monster::setY(int y) {
     this->position.setY(y);
+}
+
+// Interact with the player
+bool Monster::interact(Player &player) {
+    if (player.getStrength() > this->strength) {
+        return true;
+    } else {
+        return Settings::CHANCE_WIN();
+    }
 }

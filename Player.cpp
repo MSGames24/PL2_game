@@ -9,7 +9,8 @@
 #include "Settings.hpp"
 
 Player::Player(int x, int y) : GameObject(x, y, Settings::SYMBOL_PLAYER){
-    
+    this->energy = 100;
+    this->strength = 100;
 }
 
 // Sets the X coordinate

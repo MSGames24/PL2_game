@@ -6,8 +6,7 @@
 //
 
 #pragma once
-#include "GameObject.hpp"
-
+#include "Player.hpp"
 class MagicApple : public GameObject {
 private:
     
@@ -18,5 +17,8 @@ public:
     
     //  Constructor
     MagicApple(int, int);
+    
+    // Interact with the player
+    void interact(Player &);
     
 };

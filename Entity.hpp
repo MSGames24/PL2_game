@@ -29,9 +29,9 @@ public:
     int getEnergy() const;
     
     // Sets the energy
-    void setEnergy();
+    void setEnergy(int);
     
     // Sets the strength
-    void setStrength();
+    void setStrength(int);
     
 };

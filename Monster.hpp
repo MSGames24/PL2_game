@@ -7,17 +7,19 @@
 
 #pragma once
 #include "Entity.hpp"
-#include "GameObject.hpp"
-
+#include "Player.hpp"
 class Monster : public Entity, public GameObject {
 public:
     
     // Constructor
-    Monster(int, int);
+    Monster(int, int, int);
     
     // Sets the X coordinate
     void setX(int) override;
     
     // Sets the Y coordinate
     void setY(int) override;
+    
+    // Interact with the player
+    bool interact(Player &);
 };

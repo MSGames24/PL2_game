@@ -34,4 +34,5 @@ public:
     
     // Sets the Y coordinate
     void virtual setY(int);
+
 };

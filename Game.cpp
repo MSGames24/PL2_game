@@ -7,13 +7,26 @@
 
 #include "Game.hpp"
 
-Game::Game() : map(-1), player(-1, -1), gem(-1, -1) {
+Game::Game() : map(0), player(-1, -1), gem(-1, -1) {
     this->level = 0;
+    this->renderedMap = new char*[this->map.getHeight()];
+    for (int i = 0; i < this->map.getHeight(); i++) {
+        this->renderedMap[i] = new char[this->map.getWidth()];
+    }
+}
+
+// Destructor
+Game::~Game() {
+    for (int i = 0; i < this->map.getHeight(); i++) {
+        delete [] this->renderedMap[i];
+    }
+    delete [] this->renderedMap;
 }
 
 void Game::start() {
     
     this->spawnObjects();
+    this->printMap();
     
     // Process the movement
     char choice[1];
@@ -49,7 +62,7 @@ void Game::spawnObjects() {
     // Add monsters
     this->monsters.clear();
     for (int i = 0; i < Settings::FORMULA_MONSTERS(this->level); i++) {
-        this->monsters.push_back(Monster(-1, -1));
+        this->monsters.push_back(Monster(-1, -1, this->level));
     }
     
     // Add magic apples
@@ -123,50 +136,106 @@ void Game::spawnObjects() {
 }
 
 // Render the map with all the objects
-char ** Game::getRenderedMap() {
-    Map mapCopy = this->map;
-    char ** table = mapCopy.getTable();
+void Game::renderMap() {
+    // Clean the rendered map
+    for (int y = 0; y < this->map.getHeight(); y++) {
+        for (int x = 0; x < this->map.getWidth(); x++) {
+            this->renderedMap[x][y] = this->map.getTable()[x][y];
+        }
+    }
     
     // Render the player
-    table[this->player.getPosition().getX()][this->player.getPosition().getY()] = this->player.getSymbol();
+    this->renderedMap[this->player.getPosition().getX()][this->player.getPosition().getY()] = this->player.getSymbol();
     
     // Render the monsters
     for (int i = 0; i < monsters.size(); i++) {
-        table[this->monsters[i].getPosition().getX()][this->monsters[i].getPosition().getY()] = this->monsters[i].getSymbol();
+        this->renderedMap[this->monsters[i].getPosition().getX()][this->monsters[i].getPosition().getY()] = this->monsters[i].getSymbol();
     }
     
     // Render the gem
-    table[this->gem.getPosition().getX()][this->gem.getPosition().getY()] = this->gem.getSymbol();
+    this->renderedMap[this->gem.getPosition().getX()][this->gem.getPosition().getY()] = this->gem.getSymbol();
     
     // Render the magic apples
     for (int i = 0; i < apples.size(); i++) {
-        table[this->apples[i].getPosition().getX()][this->apples[i].getPosition().getY()] = this->apples[i].getSymbol();
+        this->renderedMap[this->apples[i].getPosition().getX()][this->apples[i].getPosition().getY()] = this->apples[i].getSymbol();
     }
-    
-    for (int h = 0; h < this->map.getHeight(); h++) {
-        for (int w = 0; w < this->map.getWidth(); w++) {
-            cout << table[w][h];
-        }
-        cout << endl;
-    }
-    
-    return table;
 }
 
 // Print the map with all the objects
 void Game::printMap() {
-    char ** table = this->getRenderedMap();
-    
+    this->renderMap();
     for (int h = 0; h < this->map.getHeight(); h++) {
         for (int w = 0; w < this->map.getWidth(); w++) {
-            cout << table[w][h];
+            cout << this->renderedMap[w][h];
         }
         cout << endl;
     }
+    cout << "S: " << this->player.getStrength() << "   E: " << this->player.getEnergy() << endl;
 }
 
 // Process one turn
 void Game::turn(char direction) {
+    this->renderMap();
+    
+    // Move the player
+    switch (direction) {
+        case 'w':
+            if (this->renderedMap[this->player.getPosition().getX()][this->player.getPosition().getY() - 1] != Settings::SYMBOL_WALL) {
+                this->player.setY(this->player.getPosition().getY() - 1);
+                this->player.setEnergy(player.getEnergy() - 3);
+            }
+            break;
+            
+        case 'a':
+            if (this->renderedMap[this->player.getPosition().getX() - 1][this->player.getPosition().getY()] != Settings::SYMBOL_WALL) {
+                this->player.setX(this->player.getPosition().getX() - 1);
+                this->player.setEnergy(player.getEnergy() - 3);
+            }
+            break;
+        
+        case 's':
+            if (this->renderedMap[this->player.getPosition().getX()][this->player.getPosition().getY() + 1] != Settings::SYMBOL_WALL) {
+                this->player.setY(this->player.getPosition().getY() + 1);
+                this->player.setEnergy(player.getEnergy() - 3);
+            }
+            break;
+            
+        case 'd':
+            if (this->renderedMap[this->player.getPosition().getX() + 1][this->player.getPosition().getY()] != Settings::SYMBOL_WALL) {
+                this->player.setX(this->player.getPosition().getX() + 1);
+                this->player.setEnergy(player.getEnergy() - 3);
+            }
+            break;
+            
+        default:
+            break;
+    }
+    
+    // Interact with a monster
+    if(this->renderedMap[this->player.getPosition().getX()][this->player.getPosition().getY()] == Settings::SYMBOL_MONSTER) {
+        for (int i = 0; i < this->monsters.size(); i++) {
+            if (this->monsters[i].getPosition() == this->player.getPosition()) {
+                if (this->monsters[i].interact(this->player)) {
+                    this->monsters.erase(this->monsters.begin() + i);
+                    break;
+                } else {
+                    break;
+                }
+            }
+        }
+    }
+    
+    // Interact with an apple
+    if(this->renderedMap[this->player.getPosition().getX()][this->player.getPosition().getY()] == Settings::SYMBOL_MAGIC_APPLE) {
+        for (int i = 0; i < this->apples.size(); i++) {
+            if (this->apples[i].getPosition() == this->player.getPosition()) {
+                this->apples[i].interact(this->player);
+                this->apples.erase(this->apples.begin() + i);
+                break;
+            }
+        }
+    }
+    
     this->printMap();
 }
 

@@ -46,7 +46,7 @@ Map::Map (int level) {
 Map::~Map () {
     // Delete allocated memory
     for (int i = 0; i < this->height; i++) {
-        delete this->table[i];
+        delete [] this->table[i];
     }
     delete [] this->table;
 }

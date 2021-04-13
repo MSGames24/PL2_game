@@ -12,3 +12,12 @@ MagicApple::MagicApple(int x, int y) : GameObject(x, y, Settings::SYMBOL_MAGIC_A
     srand(int(time(NULL)));
     this->value = rand() % 11 + 5;
 }
+
+// Interact with the player
+void MagicApple::interact(Player &player) {
+    if (player.getEnergy() + Settings::ENERGY_MAGIC_APPLE > 100) {
+        player.setEnergy(100);
+    } else {
+        player.setEnergy(player.getEnergy() + Settings::ENERGY_MAGIC_APPLE);
+    }
+}

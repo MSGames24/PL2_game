@@ -20,6 +20,9 @@ private:
     // Map of the current level
     Map map;
     
+    // Rendered map of the current level
+    char ** renderedMap;
+    
     // Player
     Player player;
     
@@ -38,7 +41,7 @@ protected:
     void spawnObjects();
     
     // Render the map with all the objects
-    char ** getRenderedMap();
+    void renderMap();
     
     // Print the map with all the objects
     void printMap();
@@ -53,6 +56,9 @@ public:
     
     // Constructor
     Game();
+    
+    // Destructor
+    ~Game();
     
     // Starts the game
     void start();

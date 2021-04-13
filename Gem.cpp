@@ -10,3 +10,8 @@
 Gem::Gem(int x, int y) : GameObject(x, y, Settings::SYMBOL_GEM) {
     
 }
+
+// Interact with the player
+void Gem::interact(Player &player) {
+    player.setStrength(player.getStrength() + Settings::STRENGTH_GEM);
+}

@@ -6,7 +6,7 @@
 //
 
 #pragma once
-#include "GameObject.hpp"
+#include "Player.hpp"
 
 class Gem : public GameObject {
 public:
@@ -14,4 +14,6 @@ public:
     // Constructor
     Gem(int, int);
     
+    // Interact with the player
+    void interact(Player &);
 };
