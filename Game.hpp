@@ -29,8 +29,8 @@ private:
     // Array of monsters
     vector<Monster> monsters;
     
-    // Gem
-    Gem gem;
+    // Array of Gems
+    vector<Gem> gems;
     
     // Array of Magic Apples
     vector<MagicApple> apples;
@@ -48,6 +48,9 @@ protected:
     
     // Process one turn
     void turn(char);
+    
+    // Open the door after collecting the gem
+    void openDoor();
     
     // Go to the next level
     void levelUp();

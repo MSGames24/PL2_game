@@ -24,6 +24,9 @@ private:
     
     // Pointer to the array
     char ** table;
+    
+    // Door position
+    Position doorPosition;
 
 public:
     
@@ -40,7 +43,7 @@ public:
     Map& operator= (const Map &);
     
     // Returns the table
-    char ** getTable() const;
+    char ** getTable(bool isEaten = false) const;
     
     // Returns the width
     int getWidth();

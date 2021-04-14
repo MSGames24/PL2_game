@@ -40,6 +40,41 @@ Map::Map (int level) {
         
         this->table[x][y] = Settings::SYMBOL_WALL;
     }
+    
+    // Generating the door to the next level
+    int x = 0;
+    int y = 0;
+    switch (rand() % 4) {
+        case 0:
+            x = 0;
+            y = rand() % this->height;
+            while (this->table[1][y] == Settings::SYMBOL_WALL) {
+                y = rand() % this->height;
+            }
+            break;
+        case 1:
+            x = rand() % this->width;
+            y = 0;
+            while (this->table[x][1] == Settings::SYMBOL_WALL) {
+                x = rand() % this->width;
+            }
+            break;
+        case 2:
+            x = this->width - 1;
+            y = rand() % this->height;
+            while (this->table[x-1][y]) {
+                y = rand() % this->height;
+            }
+            break;
+        case 3:
+            x = rand() % this->width;
+            y =  this->height - 1;
+            while (this->table[x][y-1]) {
+                x = rand() % this->width;
+            }
+            break;
+    }
+    this->doorPosition.set(x, y);
 }
 
 // Destructor
@@ -80,7 +115,10 @@ Map& Map::operator= (const Map &right) {
 }
 
 // Prints the table
-char ** Map::getTable() const {
+char ** Map::getTable(bool isEaten) const {
+    if (isEaten) {
+        this->table[doorPosition.getX()][doorPosition.getY()] = Settings::SYMBOL_DOOR;
+    }
     return this->table;
 }
 

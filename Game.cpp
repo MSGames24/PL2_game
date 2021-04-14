@@ -7,7 +7,7 @@
 
 #include "Game.hpp"
 
-Game::Game() : map(0), player(-1, -1), gem(-1, -1) {
+Game::Game() : map(0), player(-1, -1) {
     this->level = 0;
     this->renderedMap = new char*[this->map.getHeight()];
     for (int i = 0; i < this->map.getHeight(); i++) {
@@ -23,6 +23,7 @@ Game::~Game() {
     delete [] this->renderedMap;
 }
 
+// Starts the game loop
 void Game::start() {
     
     this->spawnObjects();
@@ -57,7 +58,8 @@ void Game::start() {
 void Game::spawnObjects() {
     
     // Replace the gem
-    this->gem = Gem(-1, -1);
+    this->gems.clear();
+    this->gems.push_back(Gem(-1, -1));
     
     // Add monsters
     this->monsters.clear();
@@ -85,7 +87,7 @@ void Game::spawnObjects() {
             }
         }
     }
-    
+    cout << "here3" << endl;
     spawnGems:
     // Spawn monsters
     srand(int(time(NULL)));
@@ -103,7 +105,7 @@ void Game::spawnObjects() {
             }
         }
     }
-    
+    cout << "here4" << endl;
     // Spawn gem
     while (true) {
         // Get random coordinates
@@ -111,13 +113,13 @@ void Game::spawnObjects() {
         int y = rand() % (this->map.getHeight() - 2) + 1;
         
         if (emptyMap[x][y] == Settings::SYMBOL_SPACE) {
-            this->gem.setX(x);
-            this->gem.setY(y);
+            this->gems[0].setX(x);
+            this->gems[0].setY(y);
             emptyMap[x][y] = Settings::SYMBOL_GEM;
             break;
         }
     }
-    
+    cout << "here5" << endl;
     // Spawn magic apples
     for (int i = 0; i < this->apples.size(); i++) {
         while (true) {
@@ -153,7 +155,9 @@ void Game::renderMap() {
     }
     
     // Render the gem
-    this->renderedMap[this->gem.getPosition().getX()][this->gem.getPosition().getY()] = this->gem.getSymbol();
+    for (int i = 0; i < gems.size(); i++) {
+        this->renderedMap[this->gems[i].getPosition().getX()][this->gems[i].getPosition().getY()] = this->gems[i].getSymbol();
+    }
     
     // Render the magic apples
     for (int i = 0; i < apples.size(); i++) {
@@ -211,7 +215,7 @@ void Game::turn(char direction) {
             break;
     }
     
-    // Interact with a monster
+    // Interact with a Monster
     if(this->renderedMap[this->player.getPosition().getX()][this->player.getPosition().getY()] == Settings::SYMBOL_MONSTER) {
         for (int i = 0; i < this->monsters.size(); i++) {
             if (this->monsters[i].getPosition() == this->player.getPosition()) {
@@ -225,7 +229,7 @@ void Game::turn(char direction) {
         }
     }
     
-    // Interact with an apple
+    // Interact with a Magic Apple
     if(this->renderedMap[this->player.getPosition().getX()][this->player.getPosition().getY()] == Settings::SYMBOL_MAGIC_APPLE) {
         for (int i = 0; i < this->apples.size(); i++) {
             if (this->apples[i].getPosition() == this->player.getPosition()) {
@@ -236,10 +240,50 @@ void Game::turn(char direction) {
         }
     }
     
+    // Interact with a Gem
+    if(this->renderedMap[this->player.getPosition().getX()][this->player.getPosition().getY()] == Settings::SYMBOL_GEM) {
+        for (int i = 0; i < this->gems.size(); i++) {
+            if (this->gems[i].getPosition() == this->player.getPosition()) {
+                this->gems[i].interact(this->player);
+                this->gems.erase(this->gems.begin() + i);
+                this->openDoor();
+                break;
+            }
+        }
+        
+    }
+    
+    // Interact with the Door
+    if(this->renderedMap[this->player.getPosition().getX()][this->player.getPosition().getY()] == Settings::SYMBOL_DOOR) {
+        this->levelUp();
+    }
+    
     this->printMap();
+}
+
+// Open the door after collecting the gem
+void Game::openDoor() {
+    this->map.getTable(true);
 }
 
 // Go to the next level
 void Game::levelUp() {
+    cout << "here" << endl;
+    this->level += 1;
     
+    // Changing the map
+    for (int i = 0; i < this->map.getHeight(); i++) {
+        delete [] this->renderedMap[i];
+    }
+    delete [] this->renderedMap;
+    
+    this->map = Map(this->level);
+    
+    this->renderedMap = new char*[this->map.getHeight()];
+    for (int i = 0; i < this->map.getHeight(); i++) {
+        this->renderedMap[i] = new char[this->map.getWidth()];
+    }
+    
+    this->spawnObjects();
+    cout << "here2" << endl;
 }
