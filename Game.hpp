@@ -9,6 +9,7 @@
 #include "Map.hpp"
 #include "Gem.hpp"
 #include "MagicApple.hpp"
+#include "Logger.hpp"
 #include <vector>
 
 class Game {
@@ -17,8 +18,14 @@ private:
     // Level
     int level;
     
+    // Shows if the game is running
+    bool isRunning;
+    
+    // Logs the events
+    Logger logger;
+    
     // Map of the current level
-    Map map;
+    Map * map;
     
     // Rendered map of the current level
     char ** renderedMap;
@@ -54,6 +61,9 @@ protected:
     
     // Go to the next level
     void levelUp();
+    
+    // Ends the game
+    void end();
     
 public:
     

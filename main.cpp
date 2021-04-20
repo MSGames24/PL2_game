@@ -6,7 +6,6 @@
 //
 
 #include <iostream>
-#include "Map.hpp"
 #include "Game.hpp"
 using namespace std;
 

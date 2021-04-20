@@ -15,11 +15,17 @@ Monster::Monster(int x, int y, int level) : GameObject(x, y, Settings::SYMBOL_MO
 
 // Sets the X coordinate
 void Monster::setX(int x) {
+    if (this->position.getX() != -1 and this->position.getY() != -1) {
+        this->energy -= Settings::ENERGY_PER_TURN;
+    }
     this->position.setX(x);
 }
 
 // Sets the Y coordinate
 void Monster::setY(int y) {
+    if (this->position.getX() != -1 and this->position.getY() != -1) {
+        this->energy -= Settings::ENERGY_PER_TURN;
+    }
     this->position.setY(y);
 }
 

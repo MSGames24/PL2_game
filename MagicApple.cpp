@@ -8,16 +8,16 @@
 #include "MagicApple.hpp"
 
 MagicApple::MagicApple(int x, int y) : GameObject(x, y, Settings::SYMBOL_MAGIC_APPLE) {
-    // Random value from 5 to 15
+    // A value from the one in settings + >10
     srand(int(time(NULL)));
-    this->value = rand() % 11 + 5;
+    this->value = rand() % 11 + Settings::ENERGY_MAGIC_APPLE;
 }
 
 // Interact with the player
 void MagicApple::interact(Player &player) {
-    if (player.getEnergy() + Settings::ENERGY_MAGIC_APPLE > 100) {
+    if (player.getEnergy() + this->value > 100) {
         player.setEnergy(100);
     } else {
-        player.setEnergy(player.getEnergy() + Settings::ENERGY_MAGIC_APPLE);
+        player.setEnergy(player.getEnergy() + this->value);
     }
 }

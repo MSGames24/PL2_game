@@ -24,7 +24,11 @@ int Entity::getEnergy() const {
 
 // Sets the energy
 void Entity::setEnergy(int energy) {
-    this->energy = energy;
+    if (energy < 0) {
+        this->energy = 0;
+    } else {
+        this->energy = energy;
+    }
 }
 
 // Sets the strength

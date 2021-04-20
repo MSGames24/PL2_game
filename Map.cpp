@@ -16,15 +16,15 @@ Map::Map (int level) {
     this->height = level + 7;
     
     // Dynamically allocated 2D array
-    this->table = new char*[height];
+    this->table = new char*[this->height];
     for (int i = 0; i < this->height; i++) {
         this->table[i] = new char[this->width];
     }
     
     // Assigning every inner char SYMBOL_SPACE and outer har SYMBOL_WALL
-    for (int y = 0; y < height; y++) {
+    for (int y = 0; y < this->height; y++) {
         for (int x = 0; x < width; x++) {
-            if (y == 0 or y == height - 1 or x == 0 or x == width - 1) {
+            if (y == 0 or y == this->height - 1 or x == 0 or x == width - 1) {
                 this->table[x][y] = Settings::SYMBOL_WALL;
             } else {
                 this->table[x][y] = Settings::SYMBOL_SPACE;
@@ -35,8 +35,8 @@ Map::Map (int level) {
     // Adding internal walls
     srand(int(time(NULL))); 
     for (int i = 0; i < Settings::FORMULA_WALLS(this->width, this->height); i++) {
-        int x = rand() % (width - 2) + 1;
-        int y = rand() % (height - 2) + 1;
+        int x = rand() % (this->width - 2) + 1;
+        int y = rand() % (this->height - 2) + 1;
         
         this->table[x][y] = Settings::SYMBOL_WALL;
     }
@@ -62,14 +62,14 @@ Map::Map (int level) {
         case 2:
             x = this->width - 1;
             y = rand() % this->height;
-            while (this->table[x-1][y]) {
+            while (this->table[x-1][y] == Settings::SYMBOL_WALL) {
                 y = rand() % this->height;
             }
             break;
         case 3:
             x = rand() % this->width;
             y =  this->height - 1;
-            while (this->table[x][y-1]) {
+            while (this->table[x][y-1] == Settings::SYMBOL_WALL) {
                 x = rand() % this->width;
             }
             break;

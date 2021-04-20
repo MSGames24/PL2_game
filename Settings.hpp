@@ -61,7 +61,7 @@ public:
     //-----------------------------------------------------
     
     // How much energy is gained when MAGIC APPLE is eaten
-    static const int ENERGY_MAGIC_APPLE = 20;
+    static const int ENERGY_MAGIC_APPLE = 30;
     
     // How much energy is gained when GEM is collected
     static const int STRENGTH_GEM = 3;
@@ -78,7 +78,10 @@ public:
     
     // What the strength of the MONSTER at spawn is
     static int STRENGTH_MONSTER(int level) {
-        return 20;
+        return 80 + level*5 + (rand() % 10);
     }
+    
+    // How much energy is consumed each turn
+    static const int ENERGY_PER_TURN = 3;
     
 };
